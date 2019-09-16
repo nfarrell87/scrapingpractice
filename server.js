@@ -35,6 +35,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 // A GET route for scraping the echoJS website
 app.get("/scrape", function(req, res) {
+  console.log("scrape route hit");
   // First, we grab the body of the html with axios
   axios.get("https://old.reddit.com/r/DotA2/").then(function(response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
@@ -62,7 +63,7 @@ app.get("/scrape", function(req, res) {
     });
 
     // Send a message to the client
-    res.send("Scrape Complete");
+    res.redirect("/");
   });
 });
 
@@ -115,6 +116,12 @@ app.post("/articles/:id", function(req, res) {
       res.json(err);
     });
 });
+
+app.delete("/delete/:id", function (req, res) {
+  db.Note.remove({ _id: req.params.id }).then(function(dbNote) {
+    res.json(dbNote);
+  })
+})
 
 // Start the server
 app.listen(PORT, function() {
